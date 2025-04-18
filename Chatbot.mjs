@@ -6,10 +6,12 @@ import { QdrantVectorStore } from '@langchain/qdrant'
 import 'cheerio'
 import { CheerioWebBaseLoader } from '@langchain/community/document_loaders/web/cheerio'
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
+import ora from 'ora'
 
 dotenv.config()
 
 //* INSTANTIATING PROCESS START
+
 //? Instantiating GEMINI CHAT
 const llm = new ChatGoogleGenerativeAI({
    model: 'gemini-2.0-flash',
@@ -29,6 +31,7 @@ const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
    url: process.env.QDRANT_URL,
    collectionName: 'langchainjs-testing',
 })
+
 //* INSTANTIATING PROCESS Done
 
 //? ChatBot Calling
@@ -51,46 +54,59 @@ const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
 // botCall()
 
 //* INDEXING PROCESS START
+const spinnerIndex = ora('Indexing Process...\n').start()
 
-//? Document Loading using CHEERIO
-const pTagSelector = 'p'
-const cheerioLoader = new CheerioWebBaseLoader(
-   'https://lilianweng.github.io/posts/2023-06-23-agent/',
-   {
-      selector: pTagSelector,
-   }
-)
-
-const docs = await cheerioLoader.load()
-
-// console.assert(docs.length === 1)
-// console.log(`Total characters: ${docs[0].pageContent.length}`)
-// console.log(docs.length)
-
-//? TEXT SPLITTING USING RECCURSIVECHRACTEERTEXTSPLITTER
-
-const splitter = new RecursiveCharacterTextSplitter({
-   chunkSize: 1000,
-   chunkOverlap: 200,
-})
-
-const allSplits = await splitter.splitDocuments(docs)
-// console.log(`Split blog post into ${allSplits.length} sub-documents.`)
-// console.log(allSplits[5])
-
-//? Storing Chunks in Vector Store
 try {
-   await vectorStore.addDocuments(allSplits)
-   console.log('Documents added to vector store.')
+   //? Document Loading using CHEERIO
+   const pTagSelector = 'p'
+   const cheerioLoader = new CheerioWebBaseLoader(
+      'https://lilianweng.github.io/posts/2023-06-23-agent/',
+      {
+         selector: pTagSelector,
+      }
+   )
+
+   const docs = await cheerioLoader.load()
+
+   // console.assert(docs.length === 1)
+   // console.log(`Total characters: ${docs[0].pageContent.length}`)
+   // console.log(docs.length)
+
+   //? TEXT SPLITTING USING RECCURSIVECHRACTEERTEXTSPLITTER
+
+   const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+      chunkOverlap: 200,
+   })
+
+   const allSplits = await splitter.splitDocuments(docs)
+   // console.log(`Split blog post into ${allSplits.length} sub-documents.`)
+   // console.log(allSplits[5])
+
+   //? Storing Chunks in Vector Store
+   const spinnerDocs = ora(
+      'Adding documents (Chunks) to vector store...'
+   ).start()
+   try {
+      await vectorStore.addDocuments(allSplits)
+      spinnerDocs.succeed('Documents ( Chunks ) added to vector store.')
+   } catch (error) {
+      console.log('Error adding documents to vector store:', error)
+      spinnerDocs.fail('Failed to add documents to vector store.')
+   }
+   spinnerIndex.succeed('Indexing Process Done.')
 } catch (error) {
-   console.log('Error adding documents to vector store:', error)
+   console.log('Error indexing documents:', error)
+   spinnerIndex.fail('Failed to index documents.')
 }
+
 //* INDEXING DONE
 
 //* RETRIEVING STARTS
 import { pull } from 'langchain/hub'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 
+//? Not working bcz of below line - actually it looks like just typescript now, its same if i remove CHATPROMPTTEMPLATE FROM HERe
 // const promptTemplate = (await pull) < ChatPromptTemplate > 'rlm/rag-prompt'
 
 // // Example:
@@ -103,7 +119,7 @@ import { ChatPromptTemplate } from '@langchain/core/prompts'
 // console.assert(example_messages.length === 1)
 // example_messages[0].content
 
-//? CHATPROMPT TEMPLATE INSTANTIATION
+//? CHATPROMPT TEMPLATE INSTANTIATION -working below one, just commented bcz it was for checkign with example its working
 // async function getPrompt() {
 //    const prompt = await pull('rlm/rag-prompt')
 //    if (prompt instanceof ChatPromptTemplate) {
@@ -177,11 +193,18 @@ let inputs = { question: 'What is Task Decomposition?' }
 // console.log(`\nAnswer: ${result['answer']}`)
 
 //? Calling stream steps
-console.log(inputs)
-console.log('\n====\n')
-for await (const chunk of await graph.stream(inputs, {
-   streamMode: 'updates',
-})) {
-   console.log(chunk)
+const spinnerStream = ora('Calling graph.stream()...').start()
+try {
+   console.log(inputs)
    console.log('\n====\n')
+   for await (const chunk of await graph.stream(inputs, {
+      streamMode: 'updates',
+   })) {
+      console.log(chunk)
+      console.log('\n====\n')
+   }
+   spinnerStream.succeed('Called graph.stream().')
+} catch (error) {
+   console.log('Error calling graph.stream():', error)
+   spinner.fail('Failed to call graph.stream().')
 }
