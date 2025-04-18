@@ -7,6 +7,7 @@ import 'cheerio'
 import { CheerioWebBaseLoader } from '@langchain/community/document_loaders/web/cheerio'
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
 import ora from 'ora'
+import chalk from 'chalk'
 import readline from 'node:readline/promises'
 import { stdin as input, stdout as output } from 'node:process'
 
@@ -202,7 +203,8 @@ async function main(web_url, question) {
       const result = await graph.invoke(inputs)
       // console.log(result.context.slice(0, 2))
       console.log('\n')
-      console.log(`Answer: ${result['answer']}`)
+      // console.log(`Answer:` + chalk.bold.greenBright + ` ${result['answer']}`)
+      console.log(`\nAnswer: ` + chalk.bold.greenBright`${result['answer']}`)
       spinnerStream.succeed('Response Retrieved.')
    } catch (error) {
       console.log('Error calling graph.stream():', error)
@@ -228,8 +230,11 @@ async function main(web_url, question) {
 }
 
 const rl = readline.createInterface({ input, output })
-const web_url = await rl.question('\nEnter the URL of the website: ')
-const question = await rl.question('\nEnter your question: ')
+const web_url = await rl.question(
+   chalk.bold.blue`\nEnter the URL of the website: `
+)
+
+const question = await rl.question(chalk.bold.blue`\nEnter your question: `)
 console.log('\n')
 rl.close()
 main(web_url, question)
