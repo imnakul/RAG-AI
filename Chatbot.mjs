@@ -197,26 +197,34 @@ async function main(web_url, question) {
    }
 
    //? Simple working
-   // const result = await graph.invoke(inputs)
-   // console.log(result.context.slice(0, 2))
-   // console.log(`\nAnswer: ${result['answer']}`)
-
-   //? Calling stream steps
    const spinnerStream = ora('Calling graph.stream()...').start()
    try {
-      console.log(inputs)
-      console.log('\n====\n')
-      for await (const chunk of await graph.stream(inputs, {
-         streamMode: 'updates',
-      })) {
-         console.log(chunk)
-         console.log('\n====\n')
-      }
-      spinnerStream.succeed('Called graph.stream().')
+      const result = await graph.invoke(inputs)
+      // console.log(result.context.slice(0, 2))
+      console.log('\n')
+      console.log(`Answer: ${result['answer']}`)
+      spinnerStream.succeed('Response Retrieved.')
    } catch (error) {
       console.log('Error calling graph.stream():', error)
-      spinner.fail('Failed to call graph.stream().')
+      spinnerStream.fail('Failed to Retrieve.')
    }
+
+   //? Calling stream steps
+   // const spinnerStream = ora('Calling graph.stream()...').start()
+   // try {
+   //    console.log(inputs)
+   //    console.log('\n====\n')
+   //    for await (const chunk of await graph.stream(inputs, {
+   //       streamMode: 'updates',
+   //    })) {
+   //       console.log(chunk)
+   //       console.log('\n====\n')
+   //    }
+   //    spinnerStream.succeed('Called graph.stream().')
+   // } catch (error) {
+   //    console.log('Error calling graph.stream():', error)
+   //    spinner.fail('Failed to call graph.stream().')
+   // }
 }
 
 const rl = readline.createInterface({ input, output })
