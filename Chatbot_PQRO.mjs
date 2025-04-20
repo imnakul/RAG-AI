@@ -14,6 +14,7 @@ import { stdin as input, stdout as output } from 'node:process'
 import { pull } from 'langchain/hub'
 import { Annotation } from '@langchain/langgraph'
 import { StateGraph } from '@langchain/langgraph'
+import { SortXYZBlockchainLoader } from '@langchain/community/document_loaders/web/sort_xyz_blockchain'
 
 dotenv.config()
 
@@ -114,43 +115,97 @@ async function main(web_url, question) {
 
    //? Nodes - Actual Steps - import { concat } from "@langchain/core/utils/stream";
 
+   //? RETRIEVAL PROCESS - Normal
    // const retrieve = async (state) => {
    //    const retrievedDocs = await vectorStore.similaritySearch(state.question)
    //    return { context: retrievedDocs }
    // }
 
+   //? RETRIEVAL PROCESS - PQRO based
+   // const retrieve = async (state) => {
+   //    const baseQuestion = state.question
+
+   //    // Use LLM to generate similar queries
+   //    const queryGeneratorPrompt = `Generate 3 different but related search queries based on this question:\n
+
+   // "${baseQuestion}"
+
+   // Respond ONLY with a raw JSON array, no explanation, no code block, no backticks. Example: ["query1", "query2", "query3"]
+   // `
+
+   //    const queryResponse = await llm.invoke(queryGeneratorPrompt)
+   //    console.log('\nLLM generated queries:', queryResponse.content)
+
+   //    let queryVariations
+   //    try {
+   //       queryVariations = JSON.parse(queryResponse.content) // parse the LLM response
+   //    } catch (err) {
+   //       console.error('Error parsing LLM generated queries:', err)
+   //       queryVariations = [baseQuestion] // fallback: just use the base question
+   //    }
+   //    console.log('\nParsed query variations:', queryVariations)
+
+   //    // Now retrieve in parallel
+   //    const retrievalPromises = queryVariations.map((query) =>
+   //       vectorStore.similaritySearch(query, 2)
+   //    )
+
+   //    const resultsArrays = await Promise.all(retrievalPromises)
+   //    console.log('\nLLM retrieved results:', resultsArrays)
+
+   //    const allResults = resultsArrays.flat()
+   //    const uniqueResults = Array.from(
+   //       new Map(
+   //          allResults.map((doc) => [
+   //             doc.metadata?.source || doc.pageContent,
+   //             doc,
+   //          ])
+   //       ).values()
+   //    )
+   //    console.log('\nUnique results:', uniqueResults)
+
+   //    return { context: uniqueResults }
+   // }
+
+   //? RETRIEVAL PROCESS - RRF based
    const retrieve = async (state) => {
       const baseQuestion = state.question
-
-      // Use LLM to generate similar queries
-      const queryGeneratorPrompt = `Generate 3 different but related search queries based on this question:\n
-
-   "${baseQuestion}"
-
-   Respond ONLY with a raw JSON array, no explanation, no code block, no backticks. Example: ["query1", "query2", "query3"]
-   `
-
+      const queryGeneratorPrompt = `Generate 3 different but related search queries based on this question:\n "${baseQuestion}"
+      Respond ONLY with a raw JSON array, no explanation, no code block, no backticks. Example: ["query1", "query2", "query3"]`
       const queryResponse = await llm.invoke(queryGeneratorPrompt)
-      console.log('\nLLM generated queries:', queryResponse.content)
-
       let queryVariations
       try {
-         queryVariations = JSON.parse(queryResponse.content) // parse the LLM response
-      } catch (err) {
-         console.error('Error parsing LLM generated queries:', err)
-         queryVariations = [baseQuestion] // fallback: just use the base question
+         queryVariations = JSON.parse(queryResponse.content)
+      } catch (error) {
+         console.log('Error parsing LLM generated queries:', error)
+         return
       }
-      console.log('\nParsed query variations:', queryVariations)
 
-      // Now retrieve in parallel
       const retrievalPromises = queryVariations.map((query) =>
          vectorStore.similaritySearch(query, 2)
       )
-
       const resultsArrays = await Promise.all(retrievalPromises)
-      console.log('\nLLM retrieved results:', resultsArrays)
+
+      //    //? Main Logic of Optimization Algo here
+      //    const allResults = resultsArrays.flat()
+      //    const prioritizedResults = reciprocalRankFusion(allResults).top(4)
+      //    return { context: prioritizedResults }
+      // }
+
+      // const reciprocalRankFusion = (results, k = 60) => {
+      //    scores = {}
+
+      //    for (let result of results) {
+      //       for(let r, doc_id in Enumerator(result)) {
+      //         scores[doc_id] = scores.get(doc_id, 0) + 1 / (r + k +1)
+
+      //       }
+      //    }
+      //    return Sorted(scores.items(), key=lambda x: x[1], reverse=True)
+      // }
 
       const allResults = resultsArrays.flat()
+
       const uniqueResults = Array.from(
          new Map(
             allResults.map((doc) => [
@@ -159,9 +214,35 @@ async function main(web_url, question) {
             ])
          ).values()
       )
-      console.log('\nUnique results:', uniqueResults)
 
-      return { context: uniqueResults }
+      const prioritizedResults = reciprocalRankFusion(uniqueResults).top(4)
+      console.log('\nPrioritized results after RF:\n', prioritizedResults)
+      return { context: prioritizedResults }
+   }
+
+   const reciprocalRankFusion = (results, k = 60) => {
+      const scores = {}
+
+      results.forEach((doc, r) => {
+         // Now 'results' is already unique
+         const doc_id = doc.metadata?.source || doc.pageContent
+         scores[doc_id] = (scores[doc_id] || 0) + 1 / (r + k + 1)
+      })
+
+      const sortedScores = Object.entries(scores).sort(
+         ([, scoreA], [, scoreB]) => scoreB - scoreA
+      )
+
+      return {
+         top: (n) =>
+            sortedScores
+               .slice(0, n)
+               .map(([key]) =>
+                  results.find(
+                     (doc) => (doc.metadata?.source || doc.pageContent) === key
+                  )
+               ),
+      }
    }
 
    //* GEneration Process
