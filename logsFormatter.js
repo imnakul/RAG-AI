@@ -24,7 +24,7 @@ try {
             .map(([key, value]) => `${key}: ${value}`)
             .join('\n')
 
-         return `${entries}\n---------- LOG END ----------`
+         return `${entries}\n---------- LOG SEPARATOR ----------`
       })
       .join('\n\n') // Two newlines between logs
 

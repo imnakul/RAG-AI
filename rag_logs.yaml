@@ -74,3 +74,12 @@ query: What are the limitations of using HyDE in LLMs?
 answer: HyDE may not consistently produce good results and can generate incorrect information if the subject is unfamiliar to the language model. This is because HyDE relies on creating a hypothetical answer with the help of an LLM and then searches for a match. Despite this limitation, HyDE represents a significant advancement in retrieval techniques.
 
 ---------- LOG END ----------
+
+function: Chatbot_HyDE
+timestamp: 2025-04-21T02:48:45.598Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Explain HyDE in RAG Techniques ?
+HypotheticalDoc: HyDE (Hypothetical Document Embeddings) is a Retrieval-Augmented Generation (RAG) technique that addresses the challenge of semantic mismatch between a user's query and the relevant documents in a knowledge base. Instead of directly embedding the user's query, HyDE first uses a language model to generate a hypothetical document that answers the query. This hypothetical document, which captures the semantic intent of the query, is then embedded, and the resulting embedding is used to retrieve relevant documents from the knowledge base. The retrieved documents, along with the original query, are then fed into a language model to generate the final answer. By embedding a hypothetical answer rather than the query itself, HyDE can often retrieve more relevant documents, leading to improved RAG performance, especially when dealing with complex or nuanced queries.
+answer: HyDE creates a hypothetical answer using a language model and then searches embeddings for a match. This approach performs answer-to-answer embedding similarity search, unlike the query-to-answer search in traditional RAG. However, HyDE may not consistently produce good results, especially if the subject is unfamiliar to the language model.
+
+---------- LOG END ----------

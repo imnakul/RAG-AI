@@ -94,9 +94,9 @@ async function main(web_url, question) {
    //* RETRIEVING STARTS
    const promptTemplate = await pull('rlm/rag-prompt')
 
-   const InputStateAnnotation = Annotation.Root({
-      question: Annotation,
-   })
+   // const InputStateAnnotation = Annotation.Root({
+   //    question: Annotation,
+   // })
 
    const StateAnnotation = Annotation.Root({
       question: Annotation,
@@ -104,20 +104,15 @@ async function main(web_url, question) {
       answer: Annotation,
    })
 
-   let queryVariations
+   let docContent
    let result
 
    //? 1-  PROMPT RUNNING PART
-   // const queryGeneratorPrompt = `Breakdown this question into 5 steps and generate a query for each step. :\n
 
-   // "${question}"
-
-   // Respond ONLY with a raw JSON array, no explanation, no code block, no backticks. Example: ["step1", "step2", "step3"]
-   // `
-   const queryGeneratorPrompt = `You are a helpful assistant that generates multiple sub-questions related to an input question. 
-The goal is to break down the input into a set of sub-problems / sub-questions that can be answers in isolation. 
-Generate multiple search queries related to: "${question}" 
-Output (3 queries) ONLY with a raw JSON array, no explanation, no code block, no backticks. Example: ["step1", "step2", "step3"]
+   const queryGeneratorPrompt = `
+   You are an Intelligent Assistant who writes a paragraph to answer a question .
+   Goal is to generate a paragraph to answer "${question}" in JSON format.
+   Output ONLY with a raw JSON Array, no explanation, no code block, no backticks. Example: ["content"]
    `
    const queryResponse = await llm.invoke(queryGeneratorPrompt)
    let cleanedContent = queryResponse.content.trim()
@@ -125,24 +120,24 @@ Output (3 queries) ONLY with a raw JSON array, no explanation, no code block, no
       cleanedContent = cleanedContent.replace(/```(json)?/g, '').trim()
    }
    try {
-      queryVariations = JSON.parse(cleanedContent) // parse the LLM response
+      docContent = JSON.parse(cleanedContent) // parse the LLM response
    } catch (err) {
       console.error('Error parsing LLM generated queries:', err)
-      queryVariations = [question] // fallback: just use the base question
+      docContent = [question] // fallback: just use the base question
    }
+   console.log('\nResponse after Clearning', docContent)
 
    //? 3-  RETRIEVING FXN
 
    const retrieve = async (state) => {
       const resultsArray = await vectorStore.similaritySearch(state.question, 2)
+      console.log(
+         '\nResults array after generating Vector embeddings based on DocContent (Hypothetical doc we created): ',
+         resultsArray
+      )
       return {
-         context: state.context?.length
-            ? [...state.context, ...resultsArray]
-            : resultsArray,
+         context: resultsArray,
       }
-      // return {
-      //    context: resultsArray,
-      // }
    }
 
    //? 4- GENERATE FXN
@@ -153,7 +148,7 @@ Output (3 queries) ONLY with a raw JSON array, no explanation, no code block, no
          context: docsContent,
       })
       const response = await llm.invoke(messages)
-      return { answer: response.content, context: response.content }
+      return { answer: response.content }
    }
 
    //? DEFINING GRAPH NODES AND EDGES
@@ -166,31 +161,27 @@ Output (3 queries) ONLY with a raw JSON array, no explanation, no code block, no
       .compile()
 
    //? 2-,5-,8-,... RUNNIGN GRAPH STREAM HERE
-   for (const query of queryVariations) {
-      let inputs = { question: query }
-      result = await graph.invoke(inputs)
-      console.log(
-         '\n Query: ',
-         chalk.red(query) + '\n Answer: ',
-         chalk.cyanBright(result['answer'])
-      )
-      //! Store the log
-      const logEntry = {
-         function: 'Chatbot_ChainOfThoughts',
-         timestamp: new Date().toISOString(),
-         website: web_url,
-         originalQuestion: question,
-         query: query,
-         answer: result['answer'],
-      }
-      fs.appendFileSync('rag_logs.json', JSON.stringify(logEntry) + '\n')
+   let inputs = {
+      question: docContent[0],
    }
-
+   console.log('\nQuery: ', chalk.red(question))
+   result = await graph.invoke(inputs)
    console.log(
       '\n',
       chalk.bgGreen.bold.black(' Final Respone :'),
       chalk.bold.greenBright(result['answer'])
    )
+
+   //! Logs Entry
+   const logEntry = {
+      function: 'Chatbot_HyDE',
+      timestamp: new Date().toISOString(),
+      website: web_url,
+      originalQuestion: question,
+      hypotheticalDoc: docContent[0],
+      RESPONSE: result['answer'],
+   }
+   fs.appendFileSync('rag_logs.json', JSON.stringify(logEntry) + '\n')
    //! Formatting Logs
    exec('node logsFormatter.js', (error, stdout, stderr) => {
       if (error) {
@@ -203,7 +194,6 @@ Output (3 queries) ONLY with a raw JSON array, no explanation, no code block, no
       }
       console.log(`${stdout}`)
    })
-
    //* RETRIEVING DONE
 }
 
