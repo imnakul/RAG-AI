@@ -14,40 +14,46 @@ import { stdin as input, stdout as output } from 'node:process'
 import { pull } from 'langchain/hub'
 import { Annotation } from '@langchain/langgraph'
 import { StateGraph } from '@langchain/langgraph'
-import { SortXYZBlockchainLoader } from '@langchain/community/document_loaders/web/sort_xyz_blockchain'
+import fs from 'fs'
+import { exec } from 'node:child_process'
 
 dotenv.config()
 
 async function main(web_url, question) {
+   //GlobalVariables
+   let llm
+   let vectorStore
+
    //* INSTANTIATING PROCESS START
+   const spinnerInstantiate = ora('Instantiating...\n').start()
+   try {
+      //? Instantiating GEMINI CHAT
+      llm = new ChatGoogleGenerativeAI({
+         model: 'gemini-2.0-flash',
+         temperature: 0,
+         // maxRetries: 2,
+         // other params...
+      })
 
-   //? Instantiating GEMINI CHAT
-   const llm = new ChatGoogleGenerativeAI({
-      model: 'gemini-2.0-flash',
-      temperature: 0,
-      // maxRetries: 2,
-      // other params...
-   })
+      //? Embeddings
+      const embeddings = new GoogleGenerativeAIEmbeddings({
+         // model: 'text-embedding-3-large', // 768 dimensions
+         model: 'text-embedding-004',
+      })
 
-   //? Embeddings
-   const embeddings = new GoogleGenerativeAIEmbeddings({
-      // model: 'text-embedding-3-large', // 768 dimensions
-      model: 'text-embedding-004',
-   })
-
-   //? Vector Store
-   const vectorStore = await QdrantVectorStore.fromExistingCollection(
-      embeddings,
-      {
+      //? Vector Store
+      vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
          url: process.env.QDRANT_URL,
          collectionName: 'langchainjs-testing',
-      }
-   )
-
+      })
+      spinnerInstantiate.succeed('Instantiating Done.\n')
+   } catch (error) {
+      console.log('Error during instantiation:', error)
+      spinnerInstantiate.fail('Failed to instantiate.')
+   }
    //* INSTANTIATING PROCESS Done
 
    //* INDEXING PROCESS START
-
    const spinnerIndex = ora('Indexing Process...\n').start()
    try {
       //? Document Loading using CHEERIO
@@ -58,10 +64,6 @@ async function main(web_url, question) {
 
       const docs = await cheerioLoader.load()
 
-      // console.assert(docs.length === 1)
-      // console.log(`Total characters: ${docs[0].pageContent.length}`)
-      // console.log(docs.length)
-
       //? TEXT SPLITTING USING RECCURSIVECHRACTEERTEXTSPLITTER
 
       const splitter = new RecursiveCharacterTextSplitter({
@@ -70,8 +72,6 @@ async function main(web_url, question) {
       })
 
       const allSplits = await splitter.splitDocuments(docs)
-      // console.log(`Split blog post into ${allSplits.length} sub-documents.`)
-      // console.log(allSplits[5])
 
       //? Storing Chunks in Vector Store
       const spinnerDocs = ora(
@@ -79,21 +79,19 @@ async function main(web_url, question) {
       ).start()
       try {
          await vectorStore.addDocuments(allSplits)
-         spinnerDocs.succeed('Documents ( Chunks ) added to vector store.')
+         spinnerDocs.succeed('Documents ( Chunks ) added to vector store.\n')
       } catch (error) {
          console.log('Error adding documents to vector store:', error)
-         spinnerDocs.fail('Failed to add documents to vector store.')
+         spinnerDocs.fail('Failed to add documents to vector store.\n')
       }
-      spinnerIndex.succeed('Indexing Process Done.')
+      spinnerIndex.succeed('Indexing Process Done.\n')
    } catch (error) {
       console.log('Error indexing documents:', error)
-      spinnerIndex.fail('Failed to index documents.')
+      spinnerIndex.fail('Failed to index documents.\n')
    }
-
    //* INDEXING DONE
 
    //* RETRIEVING STARTS
-
    const promptTemplate = await pull('rlm/rag-prompt')
 
    const InputStateAnnotation = Annotation.Root({
@@ -134,6 +132,7 @@ Output (3 queries) ONLY with a raw JSON array, no explanation, no code block, no
    }
 
    //? 3-  RETRIEVING FXN
+
    const retrieve = async (state) => {
       const resultsArray = await vectorStore.similaritySearch(state.question, 2)
       return {
@@ -175,13 +174,35 @@ Output (3 queries) ONLY with a raw JSON array, no explanation, no code block, no
          chalk.red(query) + '\n Answer: ',
          chalk.cyanBright(result['answer'])
       )
+      //! Store the log
+      const logEntry = {
+         function: 'Chatbot_HyDE',
+         timestamp: new Date().toISOString(),
+         website: web_url,
+         originalQuestion: question,
+         query: query,
+         answer: result['answer'],
+      }
+      fs.appendFileSync('rag_logs.json', JSON.stringify(logEntry) + '\n')
    }
 
    console.log(
       '\n',
-      chalk.bgGreen.bold.black('Final Respone : '),
+      chalk.bgGreen.bold.black(' Final Respone :'),
       chalk.bold.greenBright(result['answer'])
    )
+   //! Formatting Logs
+   exec('node logsFormatter.js', (error, stdout, stderr) => {
+      if (error) {
+         console.error(`Error executing script: ${error.message}`)
+         return
+      }
+      if (stderr) {
+         console.error(`Script error: ${stderr}`)
+         return
+      }
+      console.log(`${stdout}`)
+   })
 
    //* RETRIEVING DONE
 }

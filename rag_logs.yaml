@@ -48,4 +48,29 @@ originalQuestion: Implementation of HyDE apporach ?
 query: What are the different methods for encoding the hypothetical documents and the original query in HyDE?
 answer: In HyDE, the hypothetical document is encoded using an unsupervised contrastively learned encoder like Contriever. This encoder transforms the document into an embedding vector. This vector is then used to find similar real documents in the corpus embedding space based on vector similarity.
 
+---------- LOG END ----------function: Chatbot_HyDE
+timestamp: 2025-04-21T01:52:01.032Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Tell me about HyDE from conclusion ?
+query: What is HyDE (Hypothetical Explanations) in the context of large language models?
+answer: HyDE (Hypothetical Explanations) uses a Language Learning Model to create a theoretical document in response to a query. It then transforms this document into an embedding vector to find similar documents in a vector database, focusing on answer-to-answer embedding similarity rather than query-to-answer similarity. However, HyDE may not be effective if the subject is unfamiliar to the language model, potentially leading to incorrect information.
+
+---------- LOG END ----------
+
+function: Chatbot_HyDE
+timestamp: 2025-04-21T01:52:03.421Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Tell me about HyDE from conclusion ?
+query: How does HyDE improve reasoning or performance in LLMs?
+answer: HyDE uses a Language Learning Model to create a hypothetical answer to a query and then converts this answer into an embedding vector to find similar documents in a vector database. This method focuses on answer-to-answer embedding similarity rather than query-to-answer similarity. HyDE's performance is robust and matches well-tuned retrievers in tasks like web search, QA, and fact verification.
+
+---------- LOG END ----------
+
+function: Chatbot_HyDE
+timestamp: 2025-04-21T01:52:05.704Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Tell me about HyDE from conclusion ?
+query: What are the limitations of using HyDE in LLMs?
+answer: HyDE may not consistently produce good results and can generate incorrect information if the subject is unfamiliar to the language model. This is because HyDE relies on creating a hypothetical answer with the help of an LLM and then searches for a match. Despite this limitation, HyDE represents a significant advancement in retrieval techniques.
+
 ---------- LOG END ----------
