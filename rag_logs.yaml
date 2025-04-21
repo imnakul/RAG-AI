@@ -1,0 +1,51 @@
+function: Chatbot_HyDE
+timestamp: 2025-04-21T00:16:29.069Z
+website: https://medium.com/@kiran.phd.0102/rag-fusion-revolution-a-paradigm-shift-in-generative-ai-2349b9f81c66
+originalQuestion: What is Rag all about ?
+query: What are the key components of Retrieval-Augmented Generation (RAG)?
+answer: Retrieval-Augmented Generation (RAG) is an AI framework that enhances the quality of LLM-generated responses. It achieves this by grounding the model in external knowledge sources. This provides the LLM's internal representation of information.
+
+---------- LOG END ----------
+
+function: Chatbot_HyDE
+timestamp: 2025-04-21T00:16:31.172Z
+website: https://medium.com/@kiran.phd.0102/rag-fusion-revolution-a-paradigm-shift-in-generative-ai-2349b9f81c66
+originalQuestion: What is Rag all about ?
+query: How does RAG improve the performance of large language models?
+answer: RAG improves LLM performance by providing quality responses with the latest information. It also reduces computing, storage, and hallucinations. The RAG model compares user queries within the vector of the knowledge library and fetches out documents with similar contexts.
+
+---------- LOG END ----------
+
+function: Chatbot_HyDE
+timestamp: 2025-04-21T00:16:33.522Z
+website: https://medium.com/@kiran.phd.0102/rag-fusion-revolution-a-paradigm-shift-in-generative-ai-2349b9f81c66
+originalQuestion: What is Rag all about ?
+query: What are the common use cases and applications of RAG?
+answer: RAG applications are numerous, allowing users to converse with data repositories. Common use cases include AI assistants for doctors, nurses, and financial analysts. Businesses can also use RAG for customer support, employee training, and developer productivity by turning manuals, videos, and logs into knowledge bases.
+
+---------- LOG END ----------function: Chatbot_HyDE
+timestamp: 2025-04-21T00:23:49.247Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Implementation of HyDE apporach ?
+query: What are the specific steps involved in implementing the HyDE (Hypothetical Document Embeddings) approach?
+answer: The HyDE approach involves constructing a hypothetical document or answer from the user query using the LLM's inference capabilities. This hypothetical document, when embedded, is designed to be closer to the relevant document chunks in the embedding space. The effectiveness of this approach depends on the base model's pre-training and its relevance to the specific domain.
+
+---------- LOG END ----------
+
+function: Chatbot_HyDE
+timestamp: 2025-04-21T00:23:51.409Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Implementation of HyDE apporach ?
+query: How can I generate hypothetical documents for the HyDE approach?
+answer: To generate hypothetical documents for HyDE, you can zero-shot instruct an instruction-following language model like InstructGPT. This model generates a document that captures relevance patterns but may contain false details. Then, an unsupervised contrastively learned encoder encodes the document into an embedding vector.
+
+---------- LOG END ----------
+
+function: Chatbot_HyDE
+timestamp: 2025-04-21T00:23:53.528Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Implementation of HyDE apporach ?
+query: What are the different methods for encoding the hypothetical documents and the original query in HyDE?
+answer: In HyDE, the hypothetical document is encoded using an unsupervised contrastively learned encoder like Contriever. This encoder transforms the document into an embedding vector. This vector is then used to find similar real documents in the corpus embedding space based on vector similarity.
+
+---------- LOG END ----------
