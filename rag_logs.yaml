@@ -82,4 +82,50 @@ originalQuestion: Explain HyDE in RAG Techniques ?
 HypotheticalDoc: HyDE (Hypothetical Document Embeddings) is a Retrieval-Augmented Generation (RAG) technique that addresses the challenge of semantic mismatch between a user's query and the relevant documents in a knowledge base. Instead of directly embedding the user's query, HyDE first uses a language model to generate a hypothetical document that answers the query. This hypothetical document, which captures the semantic intent of the query, is then embedded, and the resulting embedding is used to retrieve relevant documents from the knowledge base. The retrieved documents, along with the original query, are then fed into a language model to generate the final answer. By embedding a hypothetical answer rather than the query itself, HyDE can often retrieve more relevant documents, leading to improved RAG performance, especially when dealing with complex or nuanced queries.
 answer: HyDE creates a hypothetical answer using a language model and then searches embeddings for a match. This approach performs answer-to-answer embedding similarity search, unlike the query-to-answer search in traditional RAG. However, HyDE may not consistently produce good results, especially if the subject is unfamiliar to the language model.
 
----------- LOG END ----------
+---------- LOG END ----------function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-21T03:03:12.462Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Explain Hyde ?
+query: Who is Mr. Hyde in the novella?
+answer: I'm sorry, but the provided context does not contain information about who Mr. Hyde is in the novella. The context discusses HyDE, a method that creates a "Hypothetical" answer with the help of an LLM and searches for a match. It does not provide any details about the characters or plot of the novella.
+
+---------- LOG SEPARATOR ----------
+
+function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-21T03:03:14.620Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Explain Hyde ?
+query: What are the physical characteristics of Mr. Hyde?
+answer: I am sorry, but the provided text does not contain information about the physical characteristics of Mr. Hyde. The text discusses HyDE (Hypothetical Document Expansion) and its use in enhancing search accuracy using language learning models.
+
+---------- LOG SEPARATOR ----------
+
+function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-21T03:03:16.712Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Explain Hyde ?
+query: What is the relationship between Dr. Jekyll and Mr. Hyde?
+answer: I'm sorry, but the provided context does not contain information about the relationship between Dr. Jekyll and Mr. Hyde. Therefore, I cannot answer your question.
+
+---------- LOG SEPARATOR ----------function: Chatbot_HyDE
+timestamp: 2025-04-21T03:05:04.294Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Explain Hyde ?
+hypotheticalDoc: Hyde is the alter ego of Dr. Henry Jekyll in Robert Louis Stevenson's novella, *Strange Case of Dr. Jekyll and Mr. Hyde*. He represents the dark, repressed aspects of Jekyll's personality, embodying pure evil and lacking any sense of morality or conscience. Hyde is physically smaller and deformed compared to Jekyll, reflecting his underdeveloped and purely malevolent nature. He indulges in violent and immoral acts, giving free rein to the desires and impulses that Jekyll keeps hidden. Ultimately, Hyde's existence reveals the duality of human nature and the destructive consequences of suppressing one's darker side.
+RESPONSE: HyDE uses a Language Learning Model, like ChatGPT, to create a theoretical document when responding to a query. It changes the theoretical document into an embedding vector to locate similar documents in a vector database. It focuses on answer-to-answer embedding similarity and performs well in web search, QA, and fact verification.
+
+---------- LOG SEPARATOR ----------function: Chatbot_HyDE
+timestamp: 2025-04-21T03:05:59.805Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Explain HyDE in RAG Techniques ?
+hypotheticalDoc: HyDE (Hypothetical Document Embeddings) is a Retrieval-Augmented Generation (RAG) technique that addresses the challenge of semantic mismatch between a user's query and the relevant documents in a knowledge base. Instead of directly embedding the user's query, HyDE first uses a language model to generate a hypothetical document that answers the query. This hypothetical document, which captures the semantic intent of the query, is then embedded, and the resulting embedding is used to retrieve relevant documents from the knowledge base. The retrieved documents, along with the original query, are then fed into a language model to generate the final answer. By embedding a hypothetical answer rather than the query itself, HyDE can often retrieve more relevant documents, leading to improved RAG performance, especially when dealing with complex or nuanced queries.
+RESPONSE: HyDE creates a hypothetical answer using a language model and then searches embeddings for a match. This approach performs answer-to-answer embedding similarity search, unlike the query-to-answer search in traditional RAG. However, HyDE may not consistently produce good results, especially if the subject is unfamiliar to the language model.
+
+---------- LOG SEPARATOR ----------function: Chatbot_HyDE
+timestamp: 2025-04-21T03:07:04.031Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Explain HyDE  in RAG Techniques ?
+hypotheticalDoc: HyDE (Hypothetical Document Embeddings) is a RAG technique that addresses the challenge of semantic mismatch between the query and the relevant documents. Instead of directly embedding the user's query, HyDE first uses a language model to generate a hypothetical document that answers the query. This hypothetical document, which is expected to contain information relevant to the query, is then embedded. The embedding of this hypothetical document is used to retrieve relevant documents from the knowledge base. The rationale behind HyDE is that the hypothetical document, even if not perfectly accurate, will likely share semantic similarities with the relevant documents, leading to better retrieval performance compared to directly using the query embedding. This retrieved context, along with the original query, is then fed into the LLM to generate the final answer.
+RESPONSE: HyDE creates a hypothetical answer using an LLM and then searches embeddings for a match. This approach performs answer-to-answer embedding similarity search, unlike the query-to-answer search in traditional RAG. However, HyDE may not consistently produce good results, especially if the subject is unfamiliar to the language model.
+
+---------- LOG SEPARATOR ----------

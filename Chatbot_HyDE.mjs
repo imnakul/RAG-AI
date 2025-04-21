@@ -94,10 +94,6 @@ async function main(web_url, question) {
    //* RETRIEVING STARTS
    const promptTemplate = await pull('rlm/rag-prompt')
 
-   // const InputStateAnnotation = Annotation.Root({
-   //    question: Annotation,
-   // })
-
    const StateAnnotation = Annotation.Root({
       question: Annotation,
       context: Annotation,
@@ -131,10 +127,10 @@ async function main(web_url, question) {
 
    const retrieve = async (state) => {
       const resultsArray = await vectorStore.similaritySearch(state.question, 2)
-      console.log(
-         '\nResults array after generating Vector embeddings based on DocContent (Hypothetical doc we created): ',
-         resultsArray
-      )
+      // console.log(
+      //    '\nResults array after generating Vector embeddings based on DocContent (Hypothetical doc we created): ',
+      //    resultsArray
+      // )
       return {
          context: resultsArray,
       }
