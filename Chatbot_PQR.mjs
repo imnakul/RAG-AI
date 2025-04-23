@@ -103,10 +103,6 @@ async function main(web_url, question) {
    //? States for langgraph - contains questions and responses at each step (NODES)
    // import { Document } from '@langchain/core/documents'
 
-   const InputStateAnnotation = Annotation.Root({
-      question: Annotation,
-   })
-
    const StateAnnotation = Annotation.Root({
       question: Annotation,
       context: Annotation,
@@ -126,12 +122,8 @@ async function main(web_url, question) {
       const baseQuestion = state.question
 
       // Use LLM to generate similar queries
-      const queryGeneratorPrompt = `Generate 3 different but related search queries based on this question:\n
-
-   "${baseQuestion}"
-
-   Respond ONLY with a raw JSON array, no explanation, no code block, no backticks. Example: ["query1", "query2", "query3"]
-   `
+      const queryGeneratorPrompt = ` Generate 3 different but related search queries based on this question:\n "${baseQuestion}"
+        Respond ONLY with a raw JSON array, no explanation, no code block, no backticks. Example: ["query1", "query2", "query3"] `
 
       const queryResponse = await llm.invoke(queryGeneratorPrompt)
       // console.log('\nLLM generated queries:', queryResponse.content)
@@ -143,7 +135,7 @@ async function main(web_url, question) {
          console.error('Error parsing LLM generated queries:', err)
          queryVariations = [baseQuestion] // fallback: just use the base question
       }
-      // console.log('\nParsed query variations:', queryVariations)
+      console.log('\nQuery Variations:', queryVariations)
 
       // Now retrieve in parallel
       const retrievalPromises = queryVariations.map((query) =>

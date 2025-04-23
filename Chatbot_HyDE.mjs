@@ -121,7 +121,7 @@ async function main(web_url, question) {
       console.error('Error parsing LLM generated queries:', err)
       docContent = [question] // fallback: just use the base question
    }
-   console.log('\nResponse after Clearning', docContent)
+   console.log('\nGenerated Hypothetical Doc:', docContent)
 
    //? 3-  RETRIEVING FXN
 

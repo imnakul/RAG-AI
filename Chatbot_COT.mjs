@@ -130,6 +130,7 @@ Output (3 queries) ONLY with a raw JSON array, no explanation, no code block, no
       console.error('Error parsing LLM generated queries:', err)
       queryVariations = [question] // fallback: just use the base question
    }
+   console.log('\nGenerated Sub Queries:', queryVariations)
 
    //? 3-  RETRIEVING FXN
 

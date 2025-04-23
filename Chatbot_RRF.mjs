@@ -120,6 +120,7 @@ async function main(web_url, question) {
       const baseQuestion = state.question
       const queryGeneratorPrompt = `Generate 3 different but related search queries based on this question:\n "${baseQuestion}"
       Respond ONLY with a raw JSON array, no explanation, no code block, no backticks. Example: ["query1", "query2", "query3"]`
+
       const queryResponse = await llm.invoke(queryGeneratorPrompt)
       let queryVariations
       try {
@@ -128,6 +129,7 @@ async function main(web_url, question) {
          console.log('Error parsing LLM generated queries:', error)
          return
       }
+      console.log('\nLLM generated queries:', queryVariations)
 
       const retrievalPromises = queryVariations.map((query) =>
          vectorStore.similaritySearch(query, 2)

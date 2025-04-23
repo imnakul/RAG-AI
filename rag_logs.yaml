@@ -128,4 +128,75 @@ originalQuestion: Explain HyDE  in RAG Techniques ?
 hypotheticalDoc: HyDE (Hypothetical Document Embeddings) is a RAG technique that addresses the challenge of semantic mismatch between the query and the relevant documents. Instead of directly embedding the user's query, HyDE first uses a language model to generate a hypothetical document that answers the query. This hypothetical document, which is expected to contain information relevant to the query, is then embedded. The embedding of this hypothetical document is used to retrieve relevant documents from the knowledge base. The rationale behind HyDE is that the hypothetical document, even if not perfectly accurate, will likely share semantic similarities with the relevant documents, leading to better retrieval performance compared to directly using the query embedding. This retrieved context, along with the original query, is then fed into the LLM to generate the final answer.
 RESPONSE: HyDE creates a hypothetical answer using an LLM and then searches embeddings for a match. This approach performs answer-to-answer embedding similarity search, unlike the query-to-answer search in traditional RAG. However, HyDE may not consistently produce good results, especially if the subject is unfamiliar to the language model.
 
+---------- LOG SEPARATOR ----------function: Chatbot_HyDE
+timestamp: 2025-04-21T03:14:39.803Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: What is Hyde ?
+hypotheticalDoc: What are philosophical concepts?
+RESPONSE: I am sorry, but the provided text does not contain a definition of philosophical concepts. The text focuses on meta-reasoning and task handling. It describes a process of abstraction and causal reasoning to provide nuanced responses.
+
+---------- LOG SEPARATOR ----------function: Chatbot_HyDE
+timestamp: 2025-04-21T03:17:47.407Z
+website: https://medium.aiplanet.com/advanced-rag-improving-retrieval-using-hypothetical-document-embeddings-hyde-1421a8ec075a
+originalQuestion: Explain HyDE in RAG Techniques?
+hypotheticalDoc: What are advanced prompting strategies for Retrieval-Augmented Generation?
+RESPONSE: I am sorry, but the context provided does not contain information about advanced prompting strategies for Retrieval-Augmented Generation. The context focuses on the benefits and ease of implementation of RAG.
+
+---------- LOG SEPARATOR ----------function: Chatbot_HyDE
+timestamp: 2025-04-22T23:15:05.331Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Explain HyDE in RAG Techniques ?
+hypotheticalDoc: HyDE (Hypothetical Document Embeddings) is a Retrieval-Augmented Generation (RAG) technique that addresses the challenge of semantic mismatch between a user's query and the relevant documents in a knowledge base. Instead of directly embedding the user's query, HyDE first uses a language model to generate a hypothetical document that answers the query. This hypothetical document, which captures the semantic intent of the query, is then embedded, and the resulting embedding is used to retrieve relevant documents from the knowledge base. The retrieved documents, along with the original query, are then fed into a language model to generate the final answer. By embedding a hypothetical answer rather than the query itself, HyDE can often retrieve more relevant documents, leading to improved RAG performance, especially when dealing with complex or nuanced queries.
+RESPONSE: HyDE creates a hypothetical answer using a language model and then searches embeddings for a match. This approach performs answer-to-answer embedding similarity search, unlike the query-to-answer search in traditional RAG. However, HyDE may not consistently produce good results, especially if the subject is unfamiliar to the language model.
+
+---------- LOG SEPARATOR ----------function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-23T00:59:55.230Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Explain Chain of Thought ? 
+query: What is Chain of Thought prompting?
+answer: Chain of Thought (CoT) is a prompting technique used to improve model performance on complex tasks. It instructs the model to "think step by step" to break down hard tasks into smaller, simpler steps. This approach transforms large tasks into manageable ones and provides insight into the model's thought process.
+
+---------- LOG SEPARATOR ----------
+
+function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-23T00:59:57.443Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Explain Chain of Thought ? 
+query: How does Chain of Thought improve large language model reasoning?
+answer: Chain of Thought (CoT) is a prompting technique that enhances large language model performance on complex tasks. It instructs the model to "think step by step," decomposing hard tasks into smaller, simpler steps. This transforms big tasks into manageable ones and provides insight into the model's thinking process.
+
+---------- LOG SEPARATOR ----------
+
+function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-23T00:59:59.650Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Explain Chain of Thought ? 
+query: What are the limitations of Chain of Thought prompting?
+answer: Chain of Thought (CoT) prompting is a technique that enhances model performance on complex tasks by instructing the model to "think step by step." It decomposes hard tasks into smaller, simpler steps, transforming big tasks into manageable ones. This approach also provides insights into the model's thinking process.
+
+---------- LOG SEPARATOR ----------function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-23T01:02:24.364Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Explain Chain of Thought ?
+query: What is Chain of Thought prompting?
+answer: Chain of Thought (CoT) is a prompting technique used to improve model performance on complex tasks. It instructs the model to "think step by step" to break down hard tasks into smaller, simpler steps. This approach transforms large tasks into manageable ones and provides insight into the model's thought process.
+
+---------- LOG SEPARATOR ----------
+
+function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-23T01:02:26.603Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Explain Chain of Thought ?
+query: How does Chain of Thought improve large language model reasoning?
+answer: Chain of Thought (CoT) is a prompting technique that enhances large language model performance on complex tasks. It instructs the model to "think step by step," decomposing hard tasks into smaller, simpler steps. This transforms big tasks into manageable ones and provides insight into the model's thinking process.
+
+---------- LOG SEPARATOR ----------
+
+function: Chatbot_ChainOfThoughts
+timestamp: 2025-04-23T01:02:28.725Z
+website: https://raghunaathan.medium.com/query-translation-for-rag-retrieval-augmented-generation-applications-46d74bff8f07
+originalQuestion: Explain Chain of Thought ?
+query: What are the limitations of Chain of Thought prompting?
+answer: Chain of Thought (CoT) prompting is a technique that enhances model performance on complex tasks by instructing the model to "think step by step." It decomposes hard tasks into smaller, simpler steps, transforming big tasks into manageable ones. This approach also provides insights into the model's thinking process.
+
 ---------- LOG SEPARATOR ----------
