@@ -15,6 +15,8 @@ import { pull } from 'langchain/hub'
 import { Annotation } from '@langchain/langgraph'
 import { StateGraph } from '@langchain/langgraph'
 
+import { traceable } from 'langsmith/traceable'
+
 dotenv.config()
 
 async function main(web_url, question) {
@@ -237,4 +239,4 @@ const web_url = await rl.question(
 const question = await rl.question(chalk.bold.blue`\nEnter your question: `)
 console.log('\n')
 rl.close()
-main(web_url, question)
+traceable(main(web_url, question))
